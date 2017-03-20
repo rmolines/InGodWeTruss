@@ -12,6 +12,7 @@ from node import Node
 from truss import Truss
 
 class FileReader:
+    """Class used to read and interpret the File content into creating a Truss Object"""
 
     node_list = []              # List with all the nodes
     element_list = []           # List with all the elements
