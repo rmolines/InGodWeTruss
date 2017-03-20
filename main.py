@@ -8,4 +8,4 @@ from read_file import FileReader
 if __name__ == "__main__":
     file_reader = FileReader("trelica_insper.fem")
     truss = file_reader.generate_truss_from_input()
-    print(truss)
+    print(truss.calc_global_stiffness_matrix())

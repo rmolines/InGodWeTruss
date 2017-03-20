@@ -16,7 +16,6 @@ class Node:
         self.x    = x                # Coordinate X of the Node
         self.y    = y                # Coordinate Y of the Node
 
-
     def __repr__(self):
         # Method to determine string representation of a Node
         string = str(self.id) + ': x=' + str(self.x) + " y=" + str(self.y)
