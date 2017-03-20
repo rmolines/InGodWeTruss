@@ -39,7 +39,8 @@ class Element:
 
     def __repr__(self):
         # Method to determine string representation of a Node
-        string = str(self.id) + ': node_1=' + str(self.node_1) + " node_2=" + str(self.node_2)
+        string  = str(self.id) + ': ' + str(self.node_1.id) + "-" + str(self.node_2.id)
+        #string += " l:" + str(self.length) + " a:" + str(self.area) # for a longer representation
         return string
 
     def calc_length(self):
@@ -52,16 +53,16 @@ class Element:
     def calc_element_stiffness_matrix(self):
         # Calculates the Stiffness Matrix from the Element
         ke_matrix = np.zeros((4, 4))
-        for i in range(len(ke_model_matrix)):
-            for j in range(len(line)):
-                k = calc_element_stiffness_item(i, y)
+        for i in range(len(self.ke_model_matrix)):
+            for j in range(len(self.ke_model_matrix[0])):
+                k = self.calc_element_stiffness_item(i, j)
                 ke_matrix[i][j] = k
         return ke_matrix
 
     def calc_element_stiffness_item(self, x, y):
         # Calculate the item for the matrix
-        ke_model_matrix[x][y] = model_value              # Finds the value in the model_matrix
-        calc_value = ke_matrix_values[model_value]       # Finds the function in the Dictionary
+        model_value = self.ke_model_matrix[x][y]         # Finds the value in the model_matrix
+        calc_value = self.ke_matrix_values[model_value]  # Finds the function in the Dictionary
         item  = calc_value(self.cos, self.sin)           # Calls the function and fills the matrix
         item *= ((self.mater * self.area) / self.length) # Times the constant related to the matrix
         return item
