@@ -49,7 +49,7 @@ class Element:
     def __repr__(self):
         # Method to determine string representation of a Node
         string  = str(self.id) + ': ' + str(self.node_1.id) + "-" + str(self.node_2.id)
-        #string += " l:" + str(self.length) + " a:" + str(self.area) # for a longer representation
+        #string += " l:" + str(self.length) + " a:" + str(self.area) # for a more detailed representation
         return string
 
     def calc_length(self):
@@ -77,36 +77,31 @@ class Element:
         return item
 
     def calc_element_stress(self):
-        #TODO : implement funcion
-        u_matrix = np.array([
+        # Method that calculates the Stress in an Element
+        u_matrix = np.array([                            # Array with the FreedomDegrees of an element
         [self.node_1.fd_x.id],
         [self.node_1.fd_y.id],
         [self.node_2.fd_x.id],
         [self.node_2.fd_y.id]])
-
-        for item in self.stress_strain_model[0]:
-            calc_item = self.ke_matrix_values[item]
-            item  = calc_item(self.cos, self.sin)
-            item *= (self.mater / self.length)
-        self.stress = np.dot(self.stress_strain_model, u_matrix)[0][0]
-        self.stress_strain_model = np.array([[-3, -4, 3, 4]])
+        for item in self.stress_strain_model[0]:         # Loop through model matrix [-c, -s, c, s]
+            calc_item = self.ke_matrix_values[item]      # Function to be Calculated
+            item  = calc_item(self.cos, self.sin)        # Calculate the item to each element's cos and sin
+            item *= (self.mater / self.length)           # Element's constant value * the item
+        self.stress = np.dot(self.stress_strain_model, u_matrix)[0][0] # Multiply the matrixes
+        self.stress_strain_model = np.array([[-3, -4, 3, 4]]) # Re-assign the stress_strain_model rvalue
         return self.stress
 
     def calc_element_strain(self):
-        #TODO : implement funcion
-        ss_model = self.stress_strain_model
-        u_matrix = np.array([
+        # Method that calculates the Strain in an Element
+        u_matrix = np.array([                            # Array with the FreedomDegrees of an element
         [self.node_1.fd_x.id],
         [self.node_1.fd_y.id],
         [self.node_2.fd_x.id],
         [self.node_2.fd_y.id]])
-
-        for item in range(len(ss_model[0])):
-            calc_item         = self.ke_matrix_values[self.stress_strain_model[0][item]]
-            s                 = calc_item(self.cos, self.sin)
-            s                *= (1 / self.length)
-            ss_model[0][item] = s
-
-        self.strain = np.dot(self.stress_strain_model, u_matrix)[0][0]
-        self.stress_strain_model = np.array([[-3, -4, 3, 4]])
+        for item in self.stress_strain_model[0]:         # Loop through model matrix [-c, -s, c, s]
+            calc_item = self.ke_matrix_values[item]      # Function to be Calculated
+            item  = calc_item(self.cos, self.sin)        # Calculate the item to each element's cos and sin
+            item *= (1 / self.length)                    # Element's constant value * the item
+        self.strain = np.dot(self.stress_strain_model, u_matrix)[0][0] # Multiply the matrixes
+        self.stress_strain_model = np.array([[-3, -4, 3, 4]]) # Re-assign the stress_strain_model rvalue
         return self.strain
