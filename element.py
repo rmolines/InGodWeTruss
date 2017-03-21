@@ -12,20 +12,29 @@ class Element:
     """Class that represents a Bar Element in a Truss"""
     _ids = count(0) # Counts every new object instance
 
-    ke_model_matrix = np.array([ # Matrix that defines Element's Stiffness
-    [ 1, 2, -1, -2],             # 1 = cos²    | -1 = -cos²
-    [ 2, 3, -2, -3],             # 2 = cos*sin | -2 = -cos*sin
-    [-1,-2,  1,  2],             # 3 = sin²    | -3 = -sin²
+    ke_model_matrix     = np.array([  # Matrix that defines Element's Stiffness
+    [ 1, 2, -1, -2],                  # 1 = cos²    | -1 = -cos²
+    [ 2, 3, -2, -3],                  # 2 = cos*sin | -2 = -cos*sin
+    [-1,-2,  1,  2],                  # 3 = sin²    | -3 = -sin²
     [-2,-3,  2,  3]])
 
-    ke_matrix_values = {         # Matrix that defines values in model_matrix
+    stress_strain_model = np.array([[ # Matrix that defines Element's for Stain and Stress
+     -3, -4, 3, 4]])                  # 3 = cos     |  -3 = -cos
+                                      # 4 = sin     |  -4 = -sin
+
+    ke_matrix_values = {              # Matrix that defines values in model_matrix
       1 : cos_squared,
      -1 : cos_squared_neg,
       2 : cos_times_sin,
      -2 : cos_times_sin_neg,
       3 : sin_squared,
-     -3 : sin_squared_neg
+     -3 : sin_squared_neg,
+      4 : cos_pos,
+     -4 : cos_neg,
+      5 : sin_pos,
+     -5 : sin_neg
       }
+
 
     def __init__(self, node_1, node_2, material_value = None, geometric_value = None):
         self.id     = self._ids.next()   # Element's ID
@@ -69,7 +78,35 @@ class Element:
 
     def calc_element_stress(self):
         #TODO : implement funcion
-        return
+        u_matrix = np.array([
+        [self.node_1.fd_x.id],
+        [self.node_1.fd_y.id],
+        [self.node_2.fd_x.id],
+        [self.node_2.fd_y.id]])
+
+        for item in self.stress_strain_model[0]:
+            calc_item = self.ke_matrix_values[item]
+            item  = calc_item(self.cos, self.sin)
+            item *= (self.mater / self.length)
+        self.stress = np.dot(self.stress_strain_model, u_matrix)[0][0]
+        self.stress_strain_model = np.array([[-3, -4, 3, 4]])
+        return self.stress
+
     def calc_element_strain(self):
         #TODO : implement funcion
-        return
+        ss_model = self.stress_strain_model
+        u_matrix = np.array([
+        [self.node_1.fd_x.id],
+        [self.node_1.fd_y.id],
+        [self.node_2.fd_x.id],
+        [self.node_2.fd_y.id]])
+
+        for item in range(len(ss_model[0])):
+            calc_item         = self.ke_matrix_values[self.stress_strain_model[0][item]]
+            s                 = calc_item(self.cos, self.sin)
+            s                *= (1 / self.length)
+            ss_model[0][item] = s
+
+        self.strain = np.dot(self.stress_strain_model, u_matrix)[0][0]
+        self.stress_strain_model = np.array([[-3, -4, 3, 4]])
+        return self.strain

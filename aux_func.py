@@ -14,6 +14,14 @@ def cos(x1,x2,dist):
     x_dist = (x2 - x1)
     return float(x_dist/dist)
 
+def cos_pos(cos,sin): return cos
+
+def sin_pos(cos,sin): return sin
+
+def cos_neg(cos,sin): return -cos
+
+def sin_neg(cos,sin): return -sin
+
 def cos_squared(cos,sin): return cos**2
 
 def cos_squared_neg(cos,sin): return -(cos**2)
