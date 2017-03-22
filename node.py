@@ -15,6 +15,8 @@ class Node:
         self.fd_y = fd_y             # FreedomDegree object / (fd_y.direction == 1)
         self.x    = x                # Coordinate X of the Node
         self.y    = y                # Coordinate Y of the Node
+        self.d_x  = 0                # Displacement X dimention
+        self.d_y  = 0                # Displacement Y dimention
 
     def __repr__(self):
         # Method to determine string representation of a Node

@@ -18,8 +18,8 @@ class Element:
     [-1,-2,  1,  2],                  # 3 = sin²    | -3 = -sin²
     [-2,-3,  2,  3]])
 
-    stress_strain_model = np.array([[ # Matrix that defines Element's for Stain and Stress
-     -3, -4, 3, 4]])                  # 3 = cos     |  -3 = -cos
+    stress_strain_model = np.array([  # Matrix that defines Element's for Stain and Stress
+     -4, -5, 4, 5])                   # 3 = cos     |  -3 = -cos
                                       # 4 = sin     |  -4 = -sin
 
     ke_matrix_values = {              # Matrix that defines values in model_matrix
@@ -43,6 +43,8 @@ class Element:
         self.mater  = material_value     # Specific material used
         self.area   = geometric_value    # BAR's section Area
         self.length = self.calc_length() # Indicates the length of a BAR
+        self.stress = 0                  # Valeu of Stress for the Element
+        self.strain = 0                  # Valeu of Strain for the Element
         self.cos    = cos(self.node_1.x, self.node_2.x, self.length) # Element's angle cos
         self.sin    = sin(self.node_1.y, self.node_2.y, self.length) # Element's andle sin
 
@@ -78,30 +80,30 @@ class Element:
 
     def calc_element_stress(self):
         # Method that calculates the Stress in an Element
-        u_matrix = np.array([                            # Array with the FreedomDegrees of an element
-        [self.node_1.fd_x.id],
-        [self.node_1.fd_y.id],
-        [self.node_2.fd_x.id],
-        [self.node_2.fd_y.id]])
-        for item in self.stress_strain_model[0]:         # Loop through model matrix [-c, -s, c, s]
+        cs_matrix = []
+        u_matrix  = np.array([                           # Array with the displacements of an element
+        [self.node_1.d_x],
+        [self.node_1.d_y],
+        [self.node_2.d_x],
+        [self.node_2.d_y]])
+        for item in self.stress_strain_model:            # Loop through model matrix [-c, -s, c, s]
             calc_item = self.ke_matrix_values[item]      # Function to be Calculated
             item  = calc_item(self.cos, self.sin)        # Calculate the item to each element's cos and sin
             item *= (self.mater / self.length)           # Element's constant value * the item
-        self.stress = np.dot(self.stress_strain_model, u_matrix)[0][0] # Multiply the matrixes
-        self.stress_strain_model = np.array([[-3, -4, 3, 4]]) # Re-assign the stress_strain_model rvalue
-        return self.stress
+            cs_matrix.append(item)
+        self.stress = np.dot(cs_matrix, u_matrix)[0]     # Multiply the matrixes
 
     def calc_element_strain(self):
         # Method that calculates the Strain in an Element
-        u_matrix = np.array([                            # Array with the FreedomDegrees of an element
-        [self.node_1.fd_x.id],
-        [self.node_1.fd_y.id],
-        [self.node_2.fd_x.id],
-        [self.node_2.fd_y.id]])
-        for item in self.stress_strain_model[0]:         # Loop through model matrix [-c, -s, c, s]
+        cs_matrix = []
+        u_matrix  = np.array([                           # Array with the displacements of an element
+        [self.node_1.d_x],
+        [self.node_1.d_y],
+        [self.node_2.d_x],
+        [self.node_2.d_y]])
+        for item in self.stress_strain_model:            # Loop through model matrix [-c, -s, c, s]
             calc_item = self.ke_matrix_values[item]      # Function to be Calculated
             item  = calc_item(self.cos, self.sin)        # Calculate the item to each element's cos and sin
             item *= (1 / self.length)                    # Element's constant value * the item
-        self.strain = np.dot(self.stress_strain_model, u_matrix)[0][0] # Multiply the matrixes
-        self.stress_strain_model = np.array([[-3, -4, 3, 4]]) # Re-assign the stress_strain_model rvalue
-        return self.strain
+            cs_matrix.append(item)
+        self.strain = np.dot(cs_matrix, u_matrix)[0]     # Multiply the matrixes
