@@ -18,13 +18,13 @@ class FileReader:
     element_list = []           # List with all the elements
 
     possible_params = {         # Dictionary that associates PARAMs and Functions
-    "COORDINATES" : coordinates,
-    "ELEMENT_GROUPS" : elements,
-    "INCIDENCES" : incidences,
-    "MATERIALS" : materials,
+    "COORDINATES"          : coordinates,
+    "ELEMENT_GROUPS"       : elements,
+    "INCIDENCES"           : incidences,
+    "MATERIALS"            : materials,
     "GEOMETRIC_PROPERTIES" : geom_properties,
-    "BCNODES" : bc_nodes,
-    "LOADS" : loads
+    "BCNODES"              : bc_nodes,
+    "LOADS"                : loads
     }
 
     def __init__(self, file_name):
