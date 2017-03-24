@@ -28,7 +28,7 @@ class FileReader:
     def generate_truss_from_input(self):
         # Reads the input File and generates a Truss with the specifications
         with open(self.file_name, 'r') as user_input:               # Start reading the File
-            data = user_input.read().replace("\r\n",",").split('*') # Clears the garbage in the file, stablishing breaks
+            data = user_input.read().replace("\n",",").replace("\r",'').split('*') # Clears the garbage in the file, stablishing breaks
             param = ''                                              # Set the param variable as ''
             for parameters in data:                                 # Reading the macro data
                 for letter in parameters:                           # Reading the micro data
