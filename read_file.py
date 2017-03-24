@@ -3,12 +3,7 @@ __author__  = "Matheus Marotzke"
 __copyright__ = "Copyright 2017, Matheus Marotzke"
 __license__ = "GPLv3.0"
 
-import math
-import numpy as np
 from aux_func import *
-from element import Element
-from freedom_degree import FreedomDegree
-from node import Node
 from truss import Truss
 
 class FileReader:

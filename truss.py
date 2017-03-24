@@ -88,18 +88,16 @@ class Truss:
         # Method to generate the displacement global matrix
         displacements, boundaries_conditions, n_bc = self._gen_boundaries_force_array(0)
         matrix        = self.global_stiffness_matrix
-        print(displacements)
         matrix        = np.delete(matrix, n_bc, axis = 0)# Cuts Lines in the boundaries_conditions
         matrix        = np.delete(matrix, boundaries_conditions, axis = 1)                 # Cuts Columns in the boundaries_conditions
-        print(matrix)
         displacements = np.array([[item] for item in displacements])      # Make it into a Column matrix
         reaction_matrix  = np.dot(matrix, displacements)                  # Multiply Matrixes
         index = 0
         for n in boundaries_conditions:                                   # Iterates on the nodes
             if n % 2 == 1:
-                self.nodes[n / 2].fd_y.reaction = reaction_matrix[index]  # Fill the spots with displacement in Y
+                self.nodes[n / 2].fd_y.reaction = reaction_matrix[index][0]# Fill the spots with displacement in Y
             else:
-                self.nodes[n / 2].fd_x.reaction = reaction_matrix[index]  # Fill the spots with displacement in X
+                self.nodes[n / 2].fd_x.reaction = reaction_matrix[index][0]# Fill the spots with displacement in X
             index += 1
         return reaction_matrix
 
