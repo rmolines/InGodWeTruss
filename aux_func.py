@@ -70,20 +70,26 @@ def materials(parameters, node_list, element_list): #TODO - implement the rest o
     for i in range(len(parameters)):
         mater  = parameters[i].split()                  # Split them in spaces
         if(len(parameters[i]) > 1):                     # Cuts out empthy itens
-        # Calculates the value: '2E-4' -> 2 * 10⁻⁴
-            mater                 = mater[0].split('E') # Splits it in the E
-            material_value        = float(float(mater[0]) * (10 ** int(mater[1])))
-            element_list[i].mater = material_value      # Sets the value into the right Element
+            if 'E' in mater[0]:
+                # Calculates the value: '2E-4' -> 2 * 10⁻⁴
+                mater                 = mater[0].split('E') # Splits it in the E
+                material_value        = float(float(mater[0]) * (10 ** int(mater[1])))
+            else:
+                material_value        = float(mater[0])
+            element_list[i].mater     = float(material_value)
     return node_list, element_list
 
 def geom_properties(parameters, node_list, element_list):
     # Function to sets Geometric Property values to specific Element
     parameters = parameters[2::]                        # Skips ("MATERIALS", # of elements)
     for i in range(len(parameters)):
-        geom = parameters[i].split("E")                 # Split them in 'E'
         if(len(parameters[i]) > 1):
             # Calculates the value: '2E-4' -> 2 * 10⁻⁴
-            geometric_value = float(float(geom[0]) * (10 ** int(geom[1])))
+            if 'E' in parameters[i]:
+                geom = parameters[i].split("E")             # Split them in 'E'
+                geometric_value = float(float(geom[0]) * (10 ** int(geom[1])))
+            else:
+                geom = parameters[i]
             element_list[i].area = geometric_value      # Sets the value into the right Element
     return node_list, element_list
 
