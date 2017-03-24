@@ -14,17 +14,17 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hstdri:o:",["ifile=","ofile="])
     except getopt.GetoptError:
-        print 'in_god_we_truss.py -i <inputfile> -o <outputfile>'
+        print 'usage: in_god_we_truss.py -i <inputfile> -o <outputfile>'
         sys.exit(2)
     for opt, arg in opts:
-        if opt == '-h' or opt == '--help' or opt == 'help':
+        if opt == '-h':
             print '\nin_god_we_truss.py -i <inputfile> -o <outputfile>\n'
-            print '-i             input file path'
-            print '-o             output file path'
-            print '-d             flag for DISPLACEMENT'
-            print '-s             flag for ELEMENT_STRAINS'
-            print '-t             flag for ELEMENT_STRESSES'
-            print '-r             flag for REACTION_FORCES\n'
+            print '   -i             input file path'
+            print '   -o             output file path'
+            print '   -d             flag for DISPLACEMENT'
+            print '   -s             flag for ELEMENT_STRAINS'
+            print '   -t             flag for ELEMENT_STRESSES'
+            print '   -r             flag for REACTION_FORCES\n'
             sys.exit()
         elif opt == '-d' or opt == '-s' or opt == '-t' or opt == '-r':
             value_args.append(opt)
