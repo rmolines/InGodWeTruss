@@ -4,6 +4,7 @@ __copyright__ = "Copyright 2017, Matheus Marotzke"
 __license__ = "GPLv3.0"
 
 import numpy as np
+from inversion_functions import gauss_seidel, jacobi
 
 class Truss:
     """Class that represents the Truss and it's values"""
@@ -19,9 +20,9 @@ class Truss:
         string = "Truss: Elements:" + str(self.elements) + ' Nodes:' + str(self.nodes)
         return string
 
-    def solve(self): #TODO - implement Reactions
+    def solve(self, args): #TODO - implement Reactions
         # Method to Solve Truss by calculating: Displacement, Element's Stress and Strain, Reaction
-        self.calc_nodes_displacement()
+        self.calc_nodes_displacement(args)
         self.calc_nodes_reaction()
         self.calc_elements_stress()
         self.calc_elements_strain()
@@ -66,15 +67,22 @@ class Truss:
         else:
             return displacements, boundaries_conditions, n_bc             # Return all the force_matrix
 
-    def calc_nodes_displacement(self):
+    def calc_nodes_displacement(self, args):
         # Method to generate the displacement global matrix
         force_matrix, boundaries_conditions, n_bc = self._gen_boundaries_force_array()
         matrix       = self.global_stiffness_matrix
         matrix       = np.delete(matrix, boundaries_conditions, axis = 0) # Cuts Lines in the boundaries_conditions
         matrix       = np.delete(matrix, boundaries_conditions, axis = 1) # Cuts Columns in the boundaries_conditions
-        matrix       = np.linalg.inv(matrix)                              # Invert matrix
+
+
+        if (args[4]):
+            displacement       = gauss_seidel(matrix, force_matrix);
+        else:
+            displacement       = jacobi(matrix, force_matrix);
+
+        #matrix       = np.linalg.inv(matrix);                              # Invert matrix
         #force_matrix = np.array([[item] for item in force_matrix])        # Make it into a Column matrix
-        displacement = np.dot(matrix, force_matrix)                       # Multiply Matrixes
+        #displacement = np.dot(matrix, force_matrix)                       # Multiply Matrixes
         index = 0
         for n in n_bc:                                                    # Iterates on the nodes
             if n % 2 == 1:
